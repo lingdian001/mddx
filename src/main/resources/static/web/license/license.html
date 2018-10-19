@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>授权页面</title>
+    <script src="/js/vue/vue.min.js"></script>
+    <script src="/js/vue/vue-resource.min.js"></script>
+</head>
+<body>
+    <div id="vue_det">
+        <h1>授权信息</h1>
+        <h1>网卡MAC:<input type="text" v-model="mac" /> </h1>
+        <h1>授权码 : {{license}}</h1>
+        <input type="button" @click="getLicense()" value="获取授权码">
+    </div>
+
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#vue_det',
+            data: {
+                license: "无",
+                mac: "00-00-00-00-00-00"
+            },
+            methods: {
+                getLicense:function(){
+                    if("00-00-00-00-00-00"==this.mac){
+                        alert("请输入有效的网卡信息");
+                        return;
+                    }
+
+                    //发送 post 请求
+                    this.$http.post('/pcinfo/getLicense',{mac:this.mac},{emulateJSON:true}).then(function(res){
+                        this.license=res.body.license;
+                    },function(res){
+                        console.log(res.status);
+                    });
+                }
+            }
+        })
+
+    </script>
+</body>
+
+</html>
